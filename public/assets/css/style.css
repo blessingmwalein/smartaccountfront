@@ -13717,7 +13717,7 @@ button {
       .recent-jobs-list ul li .item-content .item-inner .item-price {
         font-weight: 500;
         font-size: 0.875rem;
-        margin-left: 10px; }
+        }
 
 .filter-area {
   display: flex;
