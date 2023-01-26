@@ -1,6 +1,9 @@
 import Home from '@/views/pages/Home.vue'
 import Login from '@/views/pages/Login.vue'
 import Products from '@/views/pages/Products.vue'
+import Invoices from '@/views/pages/Invoices.vue'
+import Sell from '@/views/pages/Sell.vue'
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import auth from '@/middleware/auth'
@@ -28,6 +31,22 @@ const routes = [
     path: '/products',
     name: 'Products',
     component: Products,
+    meta: {
+      middleware: log,
+    },
+  },
+  {
+    path: '/sell',
+    name: 'Sell',
+    component: Sell,
+    meta: {
+      middleware: log,
+    },
+  },
+  {
+    path: '/invoices',
+    name: 'Invocies',
+    component: Invoices,
     meta: {
       middleware: log,
     },

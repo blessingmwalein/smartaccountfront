@@ -1,5 +1,5 @@
 <template>
-    <MainLayout :showBottomNav="true"  :showSideBar="showSideBar">
+    <MainLayout :showBottomNav="false" :showSideBar="showSideBar">
         <template #header>
             <header class="header">
                 <div class="main-bar">
@@ -16,7 +16,7 @@
                                 </router-link>
                             </div>
                             <div class="mid-content">
-                                <h5 class="mb-0">Available Stock</h5>
+                                <h5 class="mb-0">Invoices</h5>
                             </div>
                             <div class="right-content">
                                 <a href="javascript:void(0);" @click="actionShowSideBar()" class="menu-toggler" :class="[showSideBar ? 'show' : '']">
@@ -36,17 +36,19 @@
                 </div>
             </header>
         </template>
+
         <div class="page-content">
             <div class="container">
                 <div class="serach-area">
                     <div class="input-group search-input">
-                        <input type="text" placeholder="Search job here..." class="form-control style-1 main-in">
+                        <input type="text" placeholder="Invoice number or customer..."
+                            class="form-control style-1 main-in">
                         <a href="javascript:void(0);" class="btn-close"><i class="fa-solid fa-xmark"></i></a>
                     </div>
                     <div class="filter-area">
                         <div>
-                            <h5>Available Stock</h5>
-                            <span>{{ products.length }} found</span>
+                            <h5>Result</h5>
+                            <span>{{invoices.length}} invocies</span>
                         </div>
                         <a href="javascript:void(0);" class="filter-btn bg-skyblue light">
                             <svg class="text-primary" width="20" height="20" viewBox="0 0 20 18" fill="none"
@@ -66,41 +68,35 @@
                             </svg>
                         </a>
                     </div>
-
-                    <div class="list item-list recent-jobs-list">
-                        <ul>
-                            <li v-for="product in products">
-                                <div class="item-content">
-                                    <a href="job-detail.html" class="item-media"><img
-                                            :src="`${baseURL}images/${product.stock.image}`" alt="logo" width="55"></a>
-                                    <div class="item-inner">
-                                        <div class="item-title-row">
-                                            <div class="item-subtitle">{{ product.stock.category.name }}</div>
-                                            <h6 class="item-title"><a href="job-detail.html">{{
-                                                product.stock.name
-                                            }}</a>
-                                            </h6>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-2">
-
-                                            <div class="item-price">Unit Price: ${{ product.stock.unit_price }}</div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-
-                                            <div class="item-price">Available Units: {{ product.number_items_unit }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sortable-handler"></div>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <!-- Job List -->
+                </div>
+                <div class="notification-content">
+                    <a v-for="invoice in invoices" href="#">
+                        <div class="notification">
+                            <h6>#00{{ invoice.id }}</h6>
+                            <p>{{invoice.customer.name}}</p>
+                            <p>Items:{{invoice.items.length}}</p>
+                            <div class="notification-footer">
+                                <span>
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                                            stroke="#787878" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M6 3V6L8 7" stroke="#787878" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                    {{ invoice.created_at }}
+                                </span>
+                                <p class="mb-0" style="font-weight: bold;font-size: 16px;">Total: ${{ calcItemTotal(invoice) }}</p>
+                            </div>
+                        </div>
+                    </a>
+                   
                 </div>
             </div>
+
         </div>
+
     </MainLayout>
 </template>
 <script >
@@ -112,36 +108,37 @@ export default {
     },
     data() {
         return {
-            products: [],
-            productsSold: [],
+            invoices: [],
             showSideBar: false,
+
         }
     },
     mounted() {
-        this.initiateGetProducts()
+        this.initiateGetInvoices()
     },
     computed: {
         ...mapGetters(['authUser', 'baseURL', 'isAuthenticated']),
     },
 
     methods: {
-        ...mapActions(['getStoreProducts', 'getStoreProductsSold']),
-        initiateGetProducts() {
-            this.getStoreProducts({ id: this.authUser.store.id }).then((response) => {
-                this.products = response.data
-            }).catch((error) => {
-                console.log(error)
-            })
-
-            this.getStoreProductsSold({ id: this.authUser.store.id }).then((response) => {
-                this.productsSold = response.data
-            }).catch((error) => {
-                console.log(error)
-            })
-        },
+        ...mapActions(['getCustomers', 'getStoreInvoices']),
         actionShowSideBar() {
             this.showSideBar = this.showSideBar? false : true
         },
+        initiateGetInvoices() {
+            this.getStoreInvoices(this.authUser.store.id).then((response) => {
+                this.invoices = response.data
+            }).catch(() => {
+            });
+        },
+
+        calcItemTotal(invoice){
+            let total = 0;
+            invoice.items.forEach(item => {
+                total += item.stock.stock.unit_price * item.number_items_unit
+            });
+            return total
+        }
 
     }
 }

@@ -68,8 +68,20 @@ export default new Vuex.Store({
 
     async getStoreProductsSold({ commit, state }, payload) {
       return await axios.get(`${baseUrl}api/store/sold?id=${payload.id}`)
+    },
+    async getCustomers({ commit, state }, payload) {
+      return await axios.get(`${baseUrl}api/customers`)
+    },
+
+    async postStoreStockSold({ commit }, payload) {
+      return await axios.post(`${baseUrl}api/store-stock-sold`, payload)
+    },
+
+    async getStoreInvoices({ commit }, store_id) {
+      return await axios.get(`${baseUrl}api/invoices?store_id=${store_id}`)
     }
 
+    
 
   },
   modules: {

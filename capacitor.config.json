@@ -1,0 +1,6 @@
+{
+  "appId": "com.smartaccount.app",
+  "appName": "smartaccount",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
