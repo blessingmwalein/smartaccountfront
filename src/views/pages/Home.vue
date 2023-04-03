@@ -51,11 +51,11 @@
         <div class="banner-wrapper author-notification">
             <div class="container inner-wrapper">
                 <div class="dz-info">
-                    <span>{{ authUser.name }}</span>
-                    <h2 class="name mb-0">{{ authUser.store.name }}</h2>
+                    <span>{{ authUser?.name }}</span>
+                    <h2 class="name mb-0">{{ authUser?.store.name }}</h2>
                 </div>
                 <div class="dz-media media-45 rounded-circle">
-                    <a href="#"><img :src="authUser.profile_photo_url" height="100" width="100" class="rounded-circle"
+                    <a href="#"><img :src="authUser?.profile_photo_url" height="100" width="100" class="rounded-circle"
                             alt="author-image"></a>
                 </div>
             </div>
@@ -212,19 +212,19 @@ export default {
         this.initiateGetInvoices()
     },
     computed: {
-        ...mapGetters(['authUser', 'baseURL', 'isAuthenticated']),
+        ...mapGetters(['authUser?', 'baseURL', 'isAuthenticated']),
     },
 
     methods: {
         ...mapActions(['getStoreProducts', 'getStoreProductsSold',"getStoreInvoices"]),
         initiateGetProducts() {
-            this.getStoreProducts({ id: this.authUser.store.id }).then((response) => {
+            this.getStoreProducts({ id: this.authUser?.store.id }).then((response) => {
                 this.products = response.data
             }).catch((error) => {
                 console.log(error)
             })
 
-            this.getStoreProductsSold({ id: this.authUser.store.id }).then((response) => {
+            this.getStoreProductsSold({ id: this.authUser?.store.id }).then((response) => {
                 this.productsSold = response.data
             }).catch((error) => {
                 console.log(error)
@@ -234,7 +234,7 @@ export default {
             this.showSideBar = this.showSideBar? false : true
         },
         initiateGetInvoices() {
-            this.getStoreInvoices(this.authUser.store.id).then((response) => {
+            this.getStoreInvoices(this.authUser?.store.id).then((response) => {
                 this.invoices = response.data
             }).catch(() => {
             });
